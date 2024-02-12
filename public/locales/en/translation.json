@@ -1,5 +1,10 @@
 {
   "header": {
     "title": "Hello"
+  },
+  "scan": {
+    "analiz": "Analyze",
+    "open": "Take a photo",
+    "takephoto": "Take a picture of"
   }
 }

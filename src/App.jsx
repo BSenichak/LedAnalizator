@@ -9,22 +9,24 @@ import { loadLang, loadTheme } from "./store/generalReducer";
 import Footer from "./components/Footer";
 
 import ScanPage from "./components/ScanPage";
+import { loadTensorFlow } from "./store/tfReducer";
 
 export default function App() {
     let { t } = useTranslation();
     let theme = useTheme();
     let dispatch = useDispatch();
-    let [render, setRender] = useState(true)
-    if(render){
-      dispatch(loadTheme());
-      dispatch(loadLang());
-      setRender(false)
+    let [render, setRender] = useState(true);
+    if (render) {
+        dispatch(loadTheme());
+        dispatch(loadLang());
+        dispatch(loadTensorFlow())
+        setRender(false);
     }
     return (
         <Wrapper theme={theme}>
             <Header />
             <main>
-              <ScanPage/>
+                <ScanPage />
             </main>
             <Footer />
         </Wrapper>
