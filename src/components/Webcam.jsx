@@ -24,6 +24,21 @@ export default function WebCam() {
     useEffect(() => {
         dispatch(setCamera(webcamRef.current));
     }, [webcamRef]);
+    const [deviceId, setDeviceId] = React.useState({});
+    const [devices, setDevices] = React.useState([]);
+
+    const handleDevices = React.useCallback(
+        (mediaDevices) =>
+            setDevices(
+                mediaDevices.filter(({ kind }) => kind === "videoinput")
+            ),
+        [setDevices]
+    );
+
+    React.useEffect(() => {
+        navigator.mediaDevices.enumerateDevices().then(handleDevices);
+        console.log(devices, deviceId);
+    }, [handleDevices]);
     return (
         <Wrapper ref={wrapperRef}>
             <Webcam
@@ -32,7 +47,7 @@ export default function WebCam() {
                 screenshotFormat="image/jpeg"
                 width={width}
                 videoConstraints={{
-                    facingMode: "user",
+                    facingMode: "environment",
                 }}
             />
         </Wrapper>
