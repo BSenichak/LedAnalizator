@@ -4,27 +4,24 @@ import {
     Button,
     Container,
     Typography,
-    FormControl,
-    Select,
-    InputLabel,
-    MenuItem,
     useMediaQuery,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { openCamera, takeFoto, loadFoto } from "../store/cameraReducer";
 import { useTranslation } from "react-i18next";
-import { convertSpectrumToColors, setChanel } from "../store/tfReducer";
-import Charts from "./Chart";
+import { convertSpectrumToColors } from "../store/tfReducer";
 import styled from "styled-components";
 import { styled as styledMUI } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import ChartNew from "./ChartNew";
+
+
 
 export default function ScanPage() {
-    let isPhone = useMediaQuery("(max-width: 600px)")
+    let isPhone = useMediaQuery("(max-width: 600px)");
     let isCameraOpen = useSelector((s) => s.camera.cameraOpen);
     let image = useSelector((s) => s.camera.image);
     let values = useSelector((s) => s.tf.values);
-    const chanel = useSelector((state) => state.tf.chanel);
     let d = useDispatch();
     const { t } = useTranslation();
     return (
@@ -41,7 +38,7 @@ export default function ScanPage() {
             </Typography>
             {isCameraOpen && <WebCam />}
             {!isCameraOpen && (
-                <TopBtns  $ps={isPhone}>
+                <TopBtns $ps={isPhone}>
                     <Button variant="contained" onClick={() => d(openCamera())}>
                         {t("scan.open")}
                     </Button>
@@ -81,26 +78,7 @@ export default function ScanPage() {
                         </Button>
                     </div>
                     <div>
-                        <FormControl fullWidth sx={{ marginBottom: "0.5rem" }}>
-                            <InputLabel id="demo-simple-select-label">
-                                {t("scan.colorsTitle")}
-                            </InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={chanel}
-                                label={t("scan.colorsTitle")}
-                                onChange={(e) => {
-                                    d(setChanel(e.target.value));
-                                    d(convertSpectrumToColors())
-                                }}
-                            >
-                                <MenuItem value={0}>{t("scan.color.red")}</MenuItem>
-                                <MenuItem value={1}>{t("scan.color.green")}</MenuItem>
-                                <MenuItem value={2}>{t("scan.color.blue")}</MenuItem>
-                            </Select>
-                        </FormControl>
-                        {values && <Charts tensorValues={values} />}
+                        {values && <ChartNew tensorValues={values} />}
                     </div>
                 </ResultWrapper>
             )}
@@ -110,9 +88,9 @@ export default function ScanPage() {
 
 let ResultWrapper = styled.div`
     display: grid;
-    grid-template-columns: ${({$ps})=>$ps?"1fr": "1fr 1fr"};
+    grid-template-columns: ${({ $ps }) => ($ps ? "1fr" : "1fr 1fr")};
     gap: 1rem;
-    padding:  ${({$ps})=>$ps?"1rem": "0"};
+    padding: ${({ $ps }) => ($ps ? "1rem" : "0")};
     & img {
         width: 100%;
     }
@@ -125,7 +103,7 @@ let ResultWrapper = styled.div`
 let TopBtns = styled.div`
     display: flex;
     gap: 1rem;
-    padding:  ${({$ps})=>$ps?"1rem": "0"};
+    padding: ${({ $ps }) => ($ps ? "1rem" : "0")};
     & button,
     label {
         flex-grow: 1;

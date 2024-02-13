@@ -5,12 +5,9 @@ const tfSlise = createSlice({
     name: "tf",
     initialState: {
         values: null,
-        chanel: 0,
     },
     reducers: {
-        setChanel: (state, action)=>{
-            state.chanel = action.payload
-        }
+        
     },
     extraReducers: (builder) => {
         builder.addCase(loadTensorFlow.rejected, (s, a) => {
@@ -71,4 +68,3 @@ export const loadTensorFlow = createAsyncThunk("loadTF", async () => {
 });
 export default tfSlise.reducer;
 
-export const {setChanel} = tfSlise.actions

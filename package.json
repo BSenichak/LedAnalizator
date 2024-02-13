@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@canvasjs/react-charts": "^1.0.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.10",
@@ -19,12 +18,14 @@
     "@reduxjs/toolkit": "^2.0.1",
     "@tensorflow/tfjs": "^4.17.0",
     "axios": "^1.6.3",
+    "chart.js": "^4.4.1",
     "dayjs": "^1.11.10",
     "firebase": "^10.7.2",
     "i18next": "^23.7.16",
     "i18next-browser-languagedetector": "^7.2.0",
     "i18next-http-backend": "^2.4.2",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-charts": "^3.0.0-beta.57",
     "react-dom": "^18.2.0",
     "react-i18next": "^14.0.0",
