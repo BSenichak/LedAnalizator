@@ -13,17 +13,8 @@ const tfSlise = createSlice({
         }
     },
     extraReducers: (builder) => {
-        builder.addCase(loadTensorFlow.pending, (s, a) => {
-            console.log("start");
-        });
-        builder.addCase(loadTensorFlow.fulfilled, (s, a) => {
-            console.log("done");
-        });
         builder.addCase(loadTensorFlow.rejected, (s, a) => {
             console.log(a.error);
-        });
-        builder.addCase(convertSpectrumToColors.pending, (s, a) => {
-            console.log("start");
         });
         builder.addCase(convertSpectrumToColors.fulfilled, (s, a) => {
             console.log(a.payload);

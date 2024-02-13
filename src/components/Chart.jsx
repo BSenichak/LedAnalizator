@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import CanvasJSReact from "@canvasjs/react-charts";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 const { CanvasJSChart } = CanvasJSReact;
 
 const MyChartComponent = ({ tensorValues }) => {
     const selectedChannel = useSelector(state=>state.tf.chanel);
-    
+    const theme = useSelector(state=>state.general.theme);
+    console.log(theme)
+    const {t} = useTranslation()
     let [dataPoints, setDataPoints] = useState([]);
     useEffect(() => {
         setDataPoints(
@@ -21,15 +24,15 @@ const MyChartComponent = ({ tensorValues }) => {
 
     const options = {
         animationEnabled: true,
-        theme: "light2",
+        theme: theme == "light" ? "light2": "dark1",
         title: {
-            text: "Channel Values",
+            text: t("chart.title"),
         },
         axisX: {
-            title: "Width",
+            title: t("chart.width"),
         },
         axisY: {
-            title: "Channel Value",
+            title: t("chart.intencity"),
         },
         data: [
             {

@@ -6,11 +6,23 @@
     "analiz": "Analyze",
     "open": "Take a photo",
     "takephoto": "Take a picture of",
-    "load": "Upload a photo"
+    "load": "Upload a photo",
+    "color": {
+      "blue": "Blue",
+      "green": "Green",
+      "red": "Red"
+    },
+    "colorsTitle": "Color",
+    "uploadFoto": "Upload a photo"
   },
   "t": {
     "scan": {
       "pageTitle": "Analyze the image"
     }
+  },
+  "chart": {
+    "intencity": "Intensity",
+    "title": "Graph of intensities of color channels",
+    "width": "Width"
   }
 }
