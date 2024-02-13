@@ -49,7 +49,7 @@ const ChartNew = ({ tensorValues }) => {
                     },
                     {
                         label: "green",
-                        data: dataPoints.map((data) => data.greeen),
+                        data: dataPoints.map((data) => data.green),
                         borderColor: "rgb(0, 255, 0)",
                         backgroundColor: "rgb(0, 255, 0)",
                     },
@@ -65,7 +65,7 @@ const ChartNew = ({ tensorValues }) => {
                 responsive: true,
                 plugins: {
                     legend: {
-                        position: "left",
+                        position: "bottom",
                     },
                     title: {
                         display: true,
