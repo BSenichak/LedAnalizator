@@ -5,6 +5,12 @@
   "scan": {
     "analiz": "Analyze",
     "open": "Take a photo",
-    "takephoto": "Take a picture of"
+    "takephoto": "Take a picture of",
+    "load": "Upload a photo"
+  },
+  "t": {
+    "scan": {
+      "pageTitle": "Analyze the image"
+    }
   }
 }
