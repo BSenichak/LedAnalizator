@@ -6,16 +6,13 @@ const tfSlise = createSlice({
     initialState: {
         values: null,
     },
-    reducers: {
-        
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder.addCase(loadTensorFlow.rejected, (s, a) => {
             console.log(a.error);
         });
         builder.addCase(convertSpectrumToColors.fulfilled, (s, a) => {
-            console.log(a.payload);
-            s.values = a.payload
+            s.values = a.payload;
         });
         builder.addCase(convertSpectrumToColors.rejected, (s, a) => {
             console.log(a.error);
@@ -26,38 +23,45 @@ const tfSlise = createSlice({
 export const convertSpectrumToColors = createAsyncThunk(
     "convertSpectrumToColors",
     async (data, { getState }) => {
-      try {
-        const image = new Image();
-        image.src = getState().camera.image;
-  
-        const tensorImage = tf.browser.fromPixels(image);
-        const spectrumLines = tf.image.resizeBilinear(tensorImage, [
-          image.height,
-          image.width,
-        ]);
-  
-        const colors = await spectrumLines.data();
-  
-        // Assuming the correct shape is [1, image.width, 4]
-        const height = image.height;
-        const width = image.width;
-  
-        // Get the middle row index
-        const middleRow = Math.floor(height / 2);
-  
-        // Reshape the tensor to the correct shape
-        const reshapedColors = tf.tensor3d(colors, [height, width, 3]);
-  
-        // Get the middle row of colors
-        const middleRowColors = reshapedColors.arraySync()[middleRow];
-        
-        
-        return middleRowColors;
-      } catch (error) {
-        throw error;
-      }
+        try {
+            const image = new Image();
+            image.src = getState().camera.image;
+
+            const height = image.width;
+            const width = image.height;
+
+            const tensorImage = tf.browser.fromPixels(image);
+            let spectrumLines = tf.image.resizeNearestNeighbor(tensorImage, [
+                height,
+                width,
+            ]);
+            const colors = await spectrumLines.data();
+
+            const middleRow = Math.floor(height / 2);
+            const reshapedColors = tf.tensor3d(colors, [height, width, 3]);
+            const middleRowColors = reshapedColors.arraySync()[middleRow];
+            let trimed = trimArray(middleRowColors, 20);
+            let resized = await tf.image
+                .resizeNearestNeighbor([trimed], [3, 100])
+                .data();
+            const length = Math.floor(resized.length / 3);
+            const trimmedArray = resized.slice(length, length * 2);
+
+            const minValue = Math.min(...trimmedArray);
+            const maxValue = Math.max(...trimmedArray);
+            const normalizedArray = trimmedArray.map(
+                (value) => ((value - minValue) * 255) / (maxValue - minValue)
+            );
+
+            let data = to2DArray([...normalizedArray]);
+            tf.dispose();
+
+            return data;
+        } catch (error) {
+            throw error;
+        }
     }
-  );
+);
 
 export const loadTensorFlow = createAsyncThunk("loadTF", async () => {
     try {
@@ -68,3 +72,22 @@ export const loadTensorFlow = createAsyncThunk("loadTF", async () => {
 });
 export default tfSlise.reducer;
 
+function trimArray(data, rate) {
+    let startIndex = data.findIndex((row) => row.some((value) => value > rate));
+    if (startIndex !== -1) {
+        let endIndex = data.length - 1;
+        while (endIndex >= 0 && !data[endIndex].some((value) => value > rate)) {
+            endIndex--;
+        }
+        return data.slice(startIndex, endIndex + 1);
+    }
+    return [];
+}
+
+function to2DArray(data) {
+    const rows = [];
+    for (let i = 0; i < data.length; i += 3) {
+        rows.push(data.slice(i, i + 3));
+    }
+    return rows;
+}

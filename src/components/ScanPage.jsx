@@ -1,11 +1,6 @@
 import React from "react";
 import WebCam from "./Webcam";
-import {
-    Button,
-    Container,
-    Typography,
-    useMediaQuery,
-} from "@mui/material";
+import { Button, Container, Typography, useMediaQuery } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { openCamera, takeFoto, loadFoto } from "../store/cameraReducer";
 import { useTranslation } from "react-i18next";
@@ -14,8 +9,7 @@ import styled from "styled-components";
 import { styled as styledMUI } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import ChartNew from "./ChartNew";
-
-
+import { makePredict } from "../store/apiReducer";
 
 export default function ScanPage() {
     let isPhone = useMediaQuery("(max-width: 600px)");
@@ -78,7 +72,18 @@ export default function ScanPage() {
                         </Button>
                     </div>
                     <div>
-                        {values && <ChartNew tensorValues={values} />}
+                        {values && (
+                            <>
+                                <ChartNew tensorValues={values} />
+                                <Button
+                                    variant="contained"
+                                    sx={{ alignSelf: "stretch" }}
+                                    onClick={() => d(makePredict())}
+                                >
+                                    {t("scan.sendToAI")}
+                                </Button>
+                            </>
+                        )}
                     </div>
                 </ResultWrapper>
             )}
