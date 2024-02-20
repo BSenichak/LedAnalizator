@@ -7,6 +7,7 @@ import {
     CardContent,
     CircularProgress,
     Container,
+    TextField,
     Typography,
     useMediaQuery,
 } from "@mui/material";
@@ -18,10 +19,11 @@ import styled from "styled-components";
 import { styled as styledMUI } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import ChartNew from "../components/ChartNew";
-import { makePredict } from "../store/apiReducer";
+import { addNewLed, loadNames, makePredict, setNewName } from "../store/apiReducer";
 import Camera from "../components/Camera";
+import NamesAutocomplite from "../components/NamesAutocomplite";
 
-export default function ScanPage() {
+export default function AddPage() {
     let isPhone = useMediaQuery("(max-width: 600px)");
     let isCameraOpen = useSelector((s) => s.camera.cameraOpen);
     let image = useSelector((s) => s.camera.image);
@@ -29,8 +31,11 @@ export default function ScanPage() {
     let tfloading = useSelector((s) => s.tf.loading);
     let cameralLoading = useSelector((s) => s.camera.loading);
     let apiLoading = useSelector((s) => s.api.loading);
+    let isNew = useSelector((s) => s.api.choose?._id == "0");
+    let newName = useSelector((s) => s.api.newName);
     let d = useDispatch();
     const { t } = useTranslation();
+    // d(loadNames())
     return (
         <Container
             sx={{
@@ -40,8 +45,12 @@ export default function ScanPage() {
                 padding: "1rem 0",
             }}
         >
-            <Typography variant="h3" textAlign={"center"}  sx={{padding: "1rem 0"}}>
-                {t("t.scan.pageTitle")}
+            <Typography
+                variant="h3"
+                textAlign={"center"}
+                sx={{ padding: "1rem 0" }}
+            >
+                {t("t.add.pageTitle")}
             </Typography>
             <TopBtns $ps={isPhone}>
                 <Button variant="contained" onClick={() => d(openCamera())}>
@@ -86,16 +95,16 @@ export default function ScanPage() {
                                 </Button>
                             )}
                             {values && (
-                                <>
+                                <div style={{display: "flex", flexDirection: 'column', gap: "1rem", alignItems: "stretch"}}>
                                     <ChartNew tensorValues={values} />
-                                    <Button
-                                        variant="contained"
-                                        sx={{ alignSelf: "stretch" }}
-                                        onClick={() => d(makePredict())}
-                                    >
-                                        {t("scan.sendToAI")}
-                                    </Button>
-                                </>
+                                    <NamesAutocomplite />
+                                    {isNew && 
+                                        <TextField label={"new Name"} value={newName} onChange={(e)=>d(setNewName(e.target.value))}/>
+                                    }
+                                    {isNew && 
+                                        <Button onClick={()=>d(addNewLed())} variant="contained" disabled={newName.length < 3}>Add new</Button>
+                                    }
+                                </div>
                             )}
                         </CardContent>
                     </Card>
@@ -103,7 +112,7 @@ export default function ScanPage() {
             )}
             <Camera open={isCameraOpen} />
             <Backdrop open={tfloading || cameralLoading || apiLoading}>
-                <CircularProgress/>
+                <CircularProgress />
             </Backdrop>
         </Container>
     );

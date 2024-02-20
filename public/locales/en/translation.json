@@ -19,6 +19,9 @@
   "t": {
     "scan": {
       "pageTitle": "Analyze the image"
+    },
+    "add": {
+      "pageTitle": "Add new data to the database"
     }
   },
   "chart": {
@@ -43,5 +46,8 @@
       "btn": "Analyze",
       "title": "Find out the type of LED with the help of AI"
     }
+  },
+  "add": {
+    "names": "The name of the light-emitting diode"
   }
 }

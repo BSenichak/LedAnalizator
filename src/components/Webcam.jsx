@@ -37,7 +37,6 @@ export default function WebCam() {
 
     React.useEffect(() => {
         navigator.mediaDevices.enumerateDevices().then(handleDevices);
-        console.log(devices, deviceId);
     }, [handleDevices]);
     return (
         <Wrapper ref={wrapperRef}>

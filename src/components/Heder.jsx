@@ -20,7 +20,6 @@ export default function Heder() {
     let themeName = useSelector((s) => s.general.theme);
     let langName = useSelector((s) => s.general.lang);
     let theme = useTheme()
-    console.log(theme.palette.mode == "dark")
     return (
         <AppBar position="static">
             <Container>

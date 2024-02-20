@@ -19,7 +19,7 @@ export default function Camera({ open }) {
     let { t } = useTranslation();
     let dispatch = useDispatch();
     return (
-        <Dialog open={open} fullWidth="xs">
+        <Dialog open={open} fullWidth={true}>
             <DialogTitle sx={{ m: 0, p: 2 }}>{t("scan.open")}</DialogTitle>
             <IconButton
                 sx={{

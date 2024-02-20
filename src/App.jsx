@@ -13,6 +13,7 @@ import { loadTensorFlow } from "./store/tfReducer";
 import { Route, Routes } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import MainPage from "./pages/MainPage";
+import AddPage from "./pages/AddPage";
 
 export default function App() {
     let { t } = useTranslation();
@@ -32,6 +33,7 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<MainPage/>}/>
                     <Route path="/analiz" element={<ScanPage />}/>
+                    <Route path="/add" element={<AddPage />}/>
                     <Route path="/*" element={<NotFound/>}/>
                 </Routes>
             </Main>
