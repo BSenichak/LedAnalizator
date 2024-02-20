@@ -5,6 +5,7 @@ import {
     IconButton,
     Toolbar,
     Typography,
+    useTheme,
 } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
@@ -12,17 +13,20 @@ import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import ModeNightIcon from "@mui/icons-material/ModeNight";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleLang, toggleTheme } from "../store/generalReducer";
+import { Link } from "react-router-dom";
 
 export default function Heder() {
     let dispatch = useDispatch();
     let themeName = useSelector((s) => s.general.theme);
     let langName = useSelector((s) => s.general.lang);
+    let theme = useTheme()
+    console.log(theme.palette.mode == "dark")
     return (
         <AppBar position="static">
             <Container>
                 <Toolbar>
-                    <LogoBar>
-                        <Logo src="/images/logo.svg" alt="logo" />
+                    <LogoBar theme={theme} to="/">
+                        <Logo src="/images/logo.svg" alt="logo" $t={theme.palette.mode == "dark"}/>
                         <Typography variant="h5">LEDAnalizator</Typography>
                     </LogoBar>
                     <IconButton onClick={() => dispatch(toggleTheme())}>
@@ -43,11 +47,14 @@ export default function Heder() {
 
 let Logo = styled.img`
     height: 2rem;
+    ${({$t})=>$t ? "filter: invert()": "filter: none"};
 `;
 
-let LogoBar = styled.div`
+let LogoBar = styled(Link)`
     display: flex;
     align-items: center;
     gap: 0.5rem;
     flex-grow: 1;
+    text-decoration: none;
+    color: ${({theme})=>theme.palette.text.primary}
 `;

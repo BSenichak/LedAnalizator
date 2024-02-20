@@ -8,8 +8,11 @@ import { useState } from "react";
 import { loadLang, loadTheme } from "./store/generalReducer";
 import Footer from "./components/Footer";
 
-import ScanPage from "./components/ScanPage";
+import ScanPage from "./pages/ScanPage";
 import { loadTensorFlow } from "./store/tfReducer";
+import { Route, Routes } from "react-router-dom";
+import NotFound from "./pages/NotFound";
+import MainPage from "./pages/MainPage";
 
 export default function App() {
     let { t } = useTranslation();
@@ -25,9 +28,13 @@ export default function App() {
     return (
         <Wrapper theme={theme}>
             <Header />
-            <main>
-                <ScanPage />
-            </main>
+            <Main>
+                <Routes>
+                    <Route path="/" element={<MainPage/>}/>
+                    <Route path="/analiz" element={<ScanPage />}/>
+                    <Route path="/*" element={<NotFound/>}/>
+                </Routes>
+            </Main>
             <Footer />
         </Wrapper>
     );
@@ -45,3 +52,8 @@ let Wrapper = styled("div")`
         flex-grow: 1;
     }
 `;
+
+let Main = styled.main`
+    display: flex;
+    flex-direction: column;
+`

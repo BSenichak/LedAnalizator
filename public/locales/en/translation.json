@@ -13,7 +13,8 @@
       "red": "Red"
     },
     "colorsTitle": "Color",
-    "uploadFoto": "Upload a photo"
+    "uploadFoto": "Upload a photo",
+    "sendToAI": "Analyze with AI"
   },
   "t": {
     "scan": {
@@ -24,5 +25,23 @@
     "intencity": "Intensity",
     "title": "Graph of intensities of color channels",
     "width": "Width"
+  },
+  "notFound": {
+    "link": "On the main one",
+    "text": "Page not found"
+  },
+  "main": {
+    "about": {
+      "btn": "More details",
+      "title": "About the system"
+    },
+    "add": {
+      "btn": "Add",
+      "title": "Add new data to the database"
+    },
+    "scan": {
+      "btn": "Analyze",
+      "title": "Find out the type of LED with the help of AI"
+    }
   }
 }

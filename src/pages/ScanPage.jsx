@@ -1,6 +1,15 @@
 import React from "react";
-import WebCam from "./Webcam";
-import { Button, Container, Typography, useMediaQuery } from "@mui/material";
+import WebCam from "../components/Webcam";
+import {
+    Backdrop,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress,
+    Container,
+    Typography,
+    useMediaQuery,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { openCamera, takeFoto, loadFoto } from "../store/cameraReducer";
 import { useTranslation } from "react-i18next";
@@ -8,14 +17,18 @@ import { convertSpectrumToColors } from "../store/tfReducer";
 import styled from "styled-components";
 import { styled as styledMUI } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import ChartNew from "./ChartNew";
+import ChartNew from "../components/ChartNew";
 import { makePredict } from "../store/apiReducer";
+import Camera from "../components/Camera";
 
 export default function ScanPage() {
     let isPhone = useMediaQuery("(max-width: 600px)");
     let isCameraOpen = useSelector((s) => s.camera.cameraOpen);
     let image = useSelector((s) => s.camera.image);
     let values = useSelector((s) => s.tf.values);
+    let tfloading = useSelector((s) => s.tf.loading);
+    let cameralLoading = useSelector((s) => s.camera.loading);
+    let apiLoading = useSelector((s) => s.api.loading);
     let d = useDispatch();
     const { t } = useTranslation();
     return (
@@ -30,26 +43,23 @@ export default function ScanPage() {
             <Typography variant="h3" textAlign={"center"}>
                 {t("t.scan.pageTitle")}
             </Typography>
-            {isCameraOpen && <WebCam />}
-            {!isCameraOpen && (
-                <TopBtns $ps={isPhone}>
-                    <Button variant="contained" onClick={() => d(openCamera())}>
-                        {t("scan.open")}
-                    </Button>
-                    <Button
-                        component="label"
-                        variant="contained"
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        {t("scan.uploadFoto")}
-                        <VisuallyHiddenInput
-                            type="file"
-                            accept="image/png, image/jpeg"
-                            onChange={(e) => d(loadFoto(e.target.files[0]))}
-                        />
-                    </Button>
-                </TopBtns>
-            )}
+            <TopBtns $ps={isPhone}>
+                <Button variant="contained" onClick={() => d(openCamera())}>
+                    {t("scan.open")}
+                </Button>
+                <Button
+                    component="label"
+                    variant="contained"
+                    startIcon={<CloudUploadIcon />}
+                >
+                    {t("scan.uploadFoto")}
+                    <VisuallyHiddenInput
+                        type="file"
+                        accept="image/png, image/jpeg"
+                        onChange={(e) => d(loadFoto(e.target.files[0]))}
+                    />
+                </Button>
+            </TopBtns>
             {isCameraOpen && (
                 <Button
                     variant="contained"
@@ -61,32 +71,40 @@ export default function ScanPage() {
             )}
             {image && (
                 <ResultWrapper $ps={isPhone}>
-                    <div>
+                    <Card>
                         <img src={image} alt="scan photo" />
-                        <Button
-                            variant="contained"
-                            sx={{ alignSelf: "stretch" }}
-                            onClick={() => d(convertSpectrumToColors())}
-                        >
-                            {t("scan.analiz")}
-                        </Button>
-                    </div>
-                    <div>
-                        {values && (
-                            <>
-                                <ChartNew tensorValues={values} />
+                    </Card>
+                    <Card>
+                        <CardContent>
+                            {!values && (
                                 <Button
                                     variant="contained"
                                     sx={{ alignSelf: "stretch" }}
-                                    onClick={() => d(makePredict())}
+                                    onClick={() => d(convertSpectrumToColors())}
                                 >
-                                    {t("scan.sendToAI")}
+                                    {t("scan.analiz")}
                                 </Button>
-                            </>
-                        )}
-                    </div>
+                            )}
+                            {values && (
+                                <>
+                                    <ChartNew tensorValues={values} />
+                                    <Button
+                                        variant="contained"
+                                        sx={{ alignSelf: "stretch" }}
+                                        onClick={() => d(makePredict())}
+                                    >
+                                        {t("scan.sendToAI")}
+                                    </Button>
+                                </>
+                            )}
+                        </CardContent>
+                    </Card>
                 </ResultWrapper>
             )}
+            <Camera open={isCameraOpen} />
+            <Backdrop open={tfloading || cameralLoading || apiLoading}>
+                <CircularProgress/>
+            </Backdrop>
         </Container>
     );
 }
@@ -106,7 +124,8 @@ let ResultWrapper = styled.div`
 `;
 
 let TopBtns = styled.div`
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
     padding: ${({ $ps }) => ($ps ? "1rem" : "0")};
     & button,

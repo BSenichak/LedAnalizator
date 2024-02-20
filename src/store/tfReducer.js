@@ -5,17 +5,28 @@ const tfSlise = createSlice({
     name: "tf",
     initialState: {
         values: null,
+        loading: false
     },
-    reducers: {},
+    reducers: {
+        clearValues: (state) => {
+            state.values = null;
+        },
+    },
     extraReducers: (builder) => {
         builder.addCase(loadTensorFlow.rejected, (s, a) => {
             console.log(a.error);
         });
+        builder.addCase(convertSpectrumToColors.pending, (s, a) => {
+            s.values = a.payload;
+            s.loading = true
+        });
         builder.addCase(convertSpectrumToColors.fulfilled, (s, a) => {
             s.values = a.payload;
+            s.loading = false
         });
         builder.addCase(convertSpectrumToColors.rejected, (s, a) => {
             console.log(a.error);
+            s.loading = false
         });
     },
 });
@@ -70,7 +81,6 @@ export const loadTensorFlow = createAsyncThunk("loadTF", async () => {
         throw error;
     }
 });
-export default tfSlise.reducer;
 
 function trimArray(data, rate) {
     let startIndex = data.findIndex((row) => row.some((value) => value > rate));
@@ -91,3 +101,7 @@ function to2DArray(data) {
     }
     return rows;
 }
+
+export const { clearValues } = tfSlise.actions;
+
+export default tfSlise.reducer;
