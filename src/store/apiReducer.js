@@ -16,6 +16,12 @@ const apiSlice = createSlice({
         setNewName: (state, action) => {
             state.newName = action.payload;
         },
+        apiClear: (state)=> {
+            state.names = [],
+            state.newName = "",
+            state.done = false,
+            state.choose = null
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -54,6 +60,18 @@ const apiSlice = createSlice({
                 state.done = action.payload 
             })
             .addCase(addNewLed.rejected, (state, action) => {
+                state.loading = false;
+                console.log(action.error);
+            });
+        builder
+            .addCase(addNewTensor.pending, (state, action) => {
+                state.loading = true;
+            })
+            .addCase(addNewTensor.fulfilled, (state, action) => {
+                state.loading = false;
+                state.done = action.payload 
+            })
+            .addCase(addNewTensor.rejected, (state, action) => {
                 state.loading = false;
                 console.log(action.error);
             });
@@ -112,6 +130,32 @@ export const addNewLed = createAsyncThunk(
                     name,
                 },
             });
+            return true;
+        } catch (error) {
+            if (error.response) {
+                throw error.response.data.message;
+            } else {
+                return rejectWithValue({
+                    originalError: error,
+                });
+            }
+        }
+    }
+);
+export const addNewTensor = createAsyncThunk(
+    "api/addNewTensor",
+    async (data, { rejectWithValue, getState }) => {
+        try {
+            let _id = getState().api.choose.id
+            let tensor = getState().tf.values
+            const response = await axios({
+                method: "post",
+                url: "/addtensor",
+                data: {
+                    tensor,
+                    _id,
+                },
+            });
             return response;
         } catch (error) {
             if (error.response) {
@@ -125,6 +169,6 @@ export const addNewLed = createAsyncThunk(
     }
 );
 
-export const { setName, setNewName } = apiSlice.actions;
+export const { setName, setNewName, apiClear } = apiSlice.actions;
 
 export default apiSlice.reducer;

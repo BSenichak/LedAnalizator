@@ -1,25 +1,38 @@
-import React from "react";
-import WebCam from "../components/Webcam";
+import React, { useEffect, useState } from "react";
 import {
+    Alert,
     Backdrop,
     Button,
     Card,
+    CardActions,
     CardContent,
     CircularProgress,
     Container,
+    Modal,
+    Snackbar,
     TextField,
     Typography,
     useMediaQuery,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { openCamera, takeFoto, loadFoto } from "../store/cameraReducer";
+import {
+    openCamera,
+    takeFoto,
+    loadFoto,
+    cameraClear,
+} from "../store/cameraReducer";
 import { useTranslation } from "react-i18next";
-import { convertSpectrumToColors } from "../store/tfReducer";
+import { clearValues, convertSpectrumToColors } from "../store/tfReducer";
 import styled from "styled-components";
 import { styled as styledMUI } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import ChartNew from "../components/ChartNew";
-import { addNewLed, loadNames, makePredict, setNewName } from "../store/apiReducer";
+import {
+    addNewLed,
+    addNewTensor,
+    apiClear,
+    setNewName,
+} from "../store/apiReducer";
 import Camera from "../components/Camera";
 import NamesAutocomplite from "../components/NamesAutocomplite";
 
@@ -33,9 +46,21 @@ export default function AddPage() {
     let apiLoading = useSelector((s) => s.api.loading);
     let isNew = useSelector((s) => s.api.choose?._id == "0");
     let newName = useSelector((s) => s.api.newName);
+    let led = useSelector((state) => state.api.choose);
+    let isdone = useSelector((state) => state.api.done);
     let d = useDispatch();
     const { t } = useTranslation();
-    // d(loadNames())
+    let [modal, setModal] = useState(false);
+    let [modalNew, setModalNew] = useState(false);
+    let [success, setSuccess] = useState(false);
+    useEffect(() => {
+        if (isdone) {
+            d(clearValues());
+            d(cameraClear());
+            d(apiClear());
+            setSuccess(true);
+        }
+    });
     return (
         <Container
             sx={{
@@ -95,15 +120,42 @@ export default function AddPage() {
                                 </Button>
                             )}
                             {values && (
-                                <div style={{display: "flex", flexDirection: 'column', gap: "1rem", alignItems: "stretch"}}>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: "1rem",
+                                        alignItems: "stretch",
+                                    }}
+                                >
                                     <ChartNew tensorValues={values} />
                                     <NamesAutocomplite />
-                                    {isNew && 
-                                        <TextField label={"new Name"} value={newName} onChange={(e)=>d(setNewName(e.target.value))}/>
-                                    }
-                                    {isNew && 
-                                        <Button onClick={()=>d(addNewLed())} variant="contained" disabled={newName.length < 3}>Add new</Button>
-                                    }
+                                    {isNew && (
+                                        <TextField
+                                            label={"new Name"}
+                                            value={newName}
+                                            onChange={(e) =>
+                                                d(setNewName(e.target.value))
+                                            }
+                                        />
+                                    )}
+                                    {isNew && (
+                                        <Button
+                                            onClick={() => setModalNew(true)}
+                                            variant="contained"
+                                            disabled={newName.length < 3}
+                                        >
+                                            Add new
+                                        </Button>
+                                    )}
+                                    {(led && !isNew) && (
+                                        <Button
+                                            variant="contained"
+                                            onClick={() => setModal(true)}
+                                        >
+                                            Add new tensor
+                                        </Button>
+                                    )}
                                 </div>
                             )}
                         </CardContent>
@@ -114,6 +166,103 @@ export default function AddPage() {
             <Backdrop open={tfloading || cameralLoading || apiLoading}>
                 <CircularProgress />
             </Backdrop>
+            <Modal open={modal} onClose={() => setModal(false)}>
+                <Card
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: 400,
+                        bgcolor: "background.paper",
+                        border: "2px solid #000",
+                        boxShadow: 24,
+                        pt: 2,
+                        px: 4,
+                        pb: 3,
+                    }}
+                >
+                    <CardContent>
+                        <Typography variant="h6">Підтвердження дії</Typography>
+                        <Typography variant="body1">
+                            Ви дійсно бажаєте додати нові данні до{" "}
+                            <b>{led?.name}</b>
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button
+                            variant="contained"
+                            onClick={() => {
+                                setModal(false);
+                                d(addNewTensor());
+                            }}
+                        >
+                            Підтвердити
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            onClick={() => setModal(false)}
+                        >
+                            Скасувати
+                        </Button>
+                    </CardActions>
+                </Card>
+            </Modal>
+            <Modal open={modalNew} onClose={() => setModalNew(false)}>
+                <Card
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: 400,
+                        bgcolor: "background.paper",
+                        border: "2px solid #000",
+                        boxShadow: 24,
+                        pt: 2,
+                        px: 4,
+                        pb: 3,
+                    }}
+                >
+                    <CardContent>
+                        <Typography variant="h6">Підтвердження дії</Typography>
+                        <Typography variant="body1">
+                            Ви дійсно бажаєте додати новий світлодіод{" "}
+                            <b>{newName}</b>
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button
+                            variant="contained"
+                            onClick={() => {
+                                setModalNew(false);
+                                d(addNewLed())
+                            }}
+                        >
+                            Підтвердити
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            onClick={() => setModalNew(false)}
+                        >
+                            Скасувати
+                        </Button>
+                    </CardActions>
+                </Card>
+            </Modal>
+            <Snackbar
+                open={success}
+                onClose={() => setSuccess(false)}
+                autoHideDuration={6000}
+            >
+                <Alert
+                    onClose={() => setSuccess(false)}
+                    severity="success"
+                    variant="filled"
+                >
+                    Ви успішно додали данні
+                </Alert>
+            </Snackbar>
         </Container>
     );
 }

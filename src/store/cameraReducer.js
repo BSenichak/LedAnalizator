@@ -7,7 +7,7 @@ const cameraSlice = createSlice({
         cameraOpen: false,
         image: "",
         camera: null,
-        loading: false
+        loading: false,
     },
     reducers: {
         openCamera: (state) => {
@@ -23,17 +23,20 @@ const cameraSlice = createSlice({
             state.image = state.camera.getScreenshot();
             state.cameraOpen = false;
         },
+        cameraClear: (state) => {
+            state.image = ""
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(loadFoto.pending, (state, action) => {
-            state.loading = true
+            state.loading = true;
         });
         builder.addCase(loadFoto.rejected, (state, action) => {
-            state.loading = false
+            state.loading = false;
         });
         builder.addCase(loadFoto.fulfilled, (state, action) => {
             state.image = action.payload;
-            state.loading = false
+            state.loading = false;
         });
     },
 });
@@ -59,5 +62,5 @@ export const loadFoto = createAsyncThunk(
 
 export default cameraSlice.reducer;
 
-export const { openCamera, closeCamera, setCamera, takeFoto } =
+export const { openCamera, closeCamera, setCamera, takeFoto, cameraClear } =
     cameraSlice.actions;
