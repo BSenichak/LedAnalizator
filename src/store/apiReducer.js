@@ -7,7 +7,8 @@ const apiSlice = createSlice({
         names: [],
         choose: null,
         newName: "",
-        done: false
+        done: false,
+        ledData: {}
     },
     reducers: {
         setName: (state, action) => {
@@ -72,6 +73,18 @@ const apiSlice = createSlice({
                 state.done = action.payload 
             })
             .addCase(addNewTensor.rejected, (state, action) => {
+                state.loading = false;
+                console.log(action.error);
+            });
+        builder
+            .addCase(loadOneLed.pending, (state, action) => {
+                state.loading = true;
+            })
+            .addCase(loadOneLed.fulfilled, (state, action) => {
+                state.loading = false;
+                state.ledData = action.payload.data 
+            })
+            .addCase(loadOneLed.rejected, (state, action) => {
                 state.loading = false;
                 console.log(action.error);
             });
@@ -155,6 +168,27 @@ export const addNewTensor = createAsyncThunk(
                     tensor,
                     _id,
                 },
+            });
+            return response;
+        } catch (error) {
+            if (error.response) {
+                throw error.response.data.message;
+            } else {
+                return rejectWithValue({
+                    originalError: error,
+                });
+            }
+        }
+    }
+);
+
+export const loadOneLed = createAsyncThunk(
+    "api/loadOneLed",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axios({
+                method: "get",
+                url: "/getoneled?_id=" + data,
             });
             return response;
         } catch (error) {

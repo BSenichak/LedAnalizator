@@ -36,7 +36,8 @@
   "main": {
     "about": {
       "btn": "More details",
-      "title": "About the system"
+      "title": "About the system",
+      "leds": "Data base"
     },
     "add": {
       "btn": "Add",
@@ -49,5 +50,10 @@
   },
   "add": {
     "names": "The name of the light-emitting diode"
+  },
+  "led": {
+    "allLeds": {
+      "title": "Database"
+    }
   }
 }

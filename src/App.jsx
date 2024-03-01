@@ -14,6 +14,8 @@ import { Route, Routes } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import MainPage from "./pages/MainPage";
 import AddPage from "./pages/AddPage";
+import LedsPage from "./pages/LedsPage";
+import LedPage from "./pages/LedPage";
 
 export default function App() {
     let { t } = useTranslation();
@@ -34,6 +36,8 @@ export default function App() {
                     <Route path="/" element={<MainPage/>}/>
                     <Route path="/analiz" element={<ScanPage />}/>
                     <Route path="/add" element={<AddPage />}/>
+                    <Route path="/leds" element={<LedsPage />}/>
+                    <Route path="/led" element={<LedPage />}/>
                     <Route path="/*" element={<NotFound/>}/>
                 </Routes>
             </Main>

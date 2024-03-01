@@ -54,6 +54,18 @@ export default function MainPage() {
                         </Button>
                     </CardActions>
                 </CardWrapper>
+                <CardWrapper>
+                    <CardContent sx={{flexGrow: "1"}}>
+                        <Typography variant="h5" textAlign={"center"}>
+                            {t("main.about.leds")}
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button onClick={() => navigator("/leds")}>
+                            {t("main.about.btn")}
+                        </Button>
+                    </CardActions>
+                </CardWrapper>
             </Wrapper>
         </Container>
     );
