@@ -60,10 +60,10 @@ export const convertSpectrumToColors = createAsyncThunk(
 
             const minValue = Math.min(...trimmedArray);
             const maxValue = Math.max(...trimmedArray);
-            const normalizedArray = trimmedArray.map(
+            let normalizedArray = trimmedArray.map(
                 (value) => ((value - minValue) * 255) / (maxValue - minValue)
             );
-
+            normalizedArray = normalizedArray.map(el=>Math.round(el))
             let data = to2DArray([...normalizedArray]);
             tf.dispose();
 
