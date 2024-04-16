@@ -14,7 +14,10 @@ export default function NamesAutocomplite() {
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
-    let objects = useSelector((state) => state.api.names);
+    let objects = useSelector((state) => state.api.names).filter(
+        (el) => el.tensorsCount < 50
+    );
+    console.log(objects);
     let object = useSelector((state) => state.api.choose);
     let loading = useSelector((state) => state.api.loading);
 

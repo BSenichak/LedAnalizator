@@ -54,6 +54,14 @@
   "led": {
     "allLeds": {
       "title": "Database"
-    }
+    },
+    "tensors": "Spectra",
+    "noDescription": "There is no description",
+    "edit": "Edit LED information",
+    "name": "The name of the LED",
+    "nameHelper": "The name of the LED must be longer than 3 characters",
+    "description": "Description",
+    "image": "Download image",
+    "save": "Update data"
   }
 }

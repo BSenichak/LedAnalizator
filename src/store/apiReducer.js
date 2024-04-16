@@ -8,7 +8,8 @@ const apiSlice = createSlice({
         choose: null,
         newName: "",
         done: false,
-        ledData: {}
+        ledData: {},
+        predicted: null
     },
     reducers: {
         setName: (state, action) => {
@@ -22,6 +23,9 @@ const apiSlice = createSlice({
             state.newName = "",
             state.done = false,
             state.choose = null
+        },
+        clearPredicted: (state) => {
+            state.predicted = null
         }
     },
     extraReducers: (builder) => {
@@ -31,7 +35,7 @@ const apiSlice = createSlice({
             })
             .addCase(makePredict.fulfilled, (state, action) => {
                 state.loading = false;
-                console.log(action.payload?.data.tensor);
+                state.predicted = action.payload.data;
             })
             .addCase(makePredict.rejected, (state, action) => {
                 state.loading = false;
@@ -88,6 +92,18 @@ const apiSlice = createSlice({
                 state.loading = false;
                 console.log(action.error);
             });
+        builder
+            .addCase(updateLedData.pending, (state, action) => {
+                state.loading = true;
+            })
+            .addCase(updateLedData.fulfilled, (state, action) => {
+                state.loading = false;
+                state.ledData = action.payload.data 
+            })
+            .addCase(updateLedData.rejected, (state, action) => {
+                state.loading = false;
+                console.log(action.error);
+            });
     },
 });
 
@@ -97,7 +113,7 @@ export const makePredict = createAsyncThunk(
         try {
             let response = await axios({
                 method: "post",
-                url: "/check",
+                url: "/predict",
                 data: {
                     tensor: getState().tf.values,
                 },
@@ -203,6 +219,32 @@ export const loadOneLed = createAsyncThunk(
     }
 );
 
-export const { setName, setNewName, apiClear } = apiSlice.actions;
+export const updateLedData = createAsyncThunk(
+    "api/updateLedData",
+    async (data, { rejectWithValue, getState }) => {
+        try {
+            let _id = getState().api.ledData._id
+            const response = await axios({
+                method: "post",
+                url: "/updateleddata",
+                data: {
+                    _id,
+                    ...data
+                },
+            });
+            return response;
+        } catch (error) {
+            if (error.response) {
+                throw error.response.data.message;
+            } else {
+                return rejectWithValue({
+                    originalError: error,
+                });
+            }
+        }
+    }
+);
+
+export const { setName, setNewName, apiClear, clearPredicted } = apiSlice.actions;
 
 export default apiSlice.reducer;

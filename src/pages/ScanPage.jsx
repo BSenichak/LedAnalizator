@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import WebCam from "../components/Webcam";
 import {
     Backdrop,
@@ -18,8 +18,9 @@ import styled from "styled-components";
 import { styled as styledMUI } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import ChartNew from "../components/ChartNew";
-import { makePredict } from "../store/apiReducer";
+import { clearPredicted, makePredict } from "../store/apiReducer";
 import Camera from "../components/Camera";
+import { useNavigate } from "react-router-dom";
 
 export default function ScanPage() {
     let isPhone = useMediaQuery("(max-width: 600px)");
@@ -31,6 +32,15 @@ export default function ScanPage() {
     let apiLoading = useSelector((s) => s.api.loading);
     let d = useDispatch();
     const { t } = useTranslation();
+    let navigator = useNavigate();
+    let predicted = useSelector((s) => s.api.predicted);
+    useEffect(() => {
+        if (predicted) {
+            d(clearPredicted())
+            navigator("/led?_id=" + predicted._id);
+        }
+    }, [predicted]);
+
     return (
         <Container
             sx={{
@@ -40,7 +50,11 @@ export default function ScanPage() {
                 padding: "1rem 0",
             }}
         >
-            <Typography variant="h3" textAlign={"center"}  sx={{padding: "1rem 0"}}>
+            <Typography
+                variant="h3"
+                textAlign={"center"}
+                sx={{ padding: "1rem 0" }}
+            >
                 {t("t.scan.pageTitle")}
             </Typography>
             <TopBtns $ps={isPhone}>
@@ -103,7 +117,7 @@ export default function ScanPage() {
             )}
             <Camera open={isCameraOpen} />
             <Backdrop open={tfloading || cameralLoading || apiLoading}>
-                <CircularProgress/>
+                <CircularProgress />
             </Backdrop>
         </Container>
     );
