@@ -45,7 +45,8 @@
     },
     "scan": {
       "btn": "Analyze",
-      "title": "Find out the type of LED with the help of AI"
+      "title": "Find out the type of LED with the help of AI",
+      "camError": "The camera is not supported"
     }
   },
   "add": {
